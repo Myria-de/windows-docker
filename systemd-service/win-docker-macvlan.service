@@ -1,0 +1,20 @@
+[Unit]
+Description=Create vlan-shim and routing
+#Requires=docker.service
+#After=docker.service
+
+[Service]
+Environment=PATH=/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+#User=root
+#Group=docker
+WorkingDirectory=/opt/win-docker
+# Shutdown container (if running) when unit is started
+#ExecStartPre=docker compose -f docker-compose-win11.yml down
+# Start container when unit is started
+#ExecStart=docker compose -f docker-compose-win11.yml up
+ExecStart=/opt/win-docker/2_start_docker_macvlan.sh
+# Stop container when unit is stopped
+#ExecStop=docker compose -f docker-compose-win11.yml down
+
+[Install]
+WantedBy=default.target
