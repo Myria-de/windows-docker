@@ -1,0 +1,53 @@
+services:
+  windows2:
+    image: linuxwelt/windocker
+    container_name: windows10
+    environment:
+      LANGUAGE: "German"
+      VERSION: "win10"
+      REGION: "de-DE"
+      KEYBOARD: "de-DE"
+      DISK_SIZE: "256G"
+      USERNAME: "[User]"
+      PASSWORD: "[Password]"
+      RAM_SIZE: "4G"
+      CPU_CORES: "2"
+      #DHCP: "Y" # Windows erhält die IP per DHCP vom Router. Netzwerk "vlan" muss konfiguriert sein.
+      HOST_PORTS: "5902,5900"
+      ARGUMENTS: "-vga qxl -spice port=5902,addr=0.0.0.0,disable-ticketing -chardev spicevmc,id=vdagent,debug=0,name=vdagent,clipboard=on,mouse=off -device virtio-serial-pci -device virtserialport,chardev=vdagent,id=vdagent,name=com.redhat.spice.0 -device ich9-intel-hda -device hda-output -audio spice"
+    # Für eine individuelle IP-Nummer im Container. Netzwerk "vlan" muss konfiguriert sein.
+    #networks:
+    #  vlan:
+    #    ipv4_address: 192.168.179.201
+
+    volumes:
+    # Eigene ISO-Datei für die Installation verwenden
+    #- /opt/win-docker/ISO/Win11_23H2_German_x64v2.iso:/custom.iso
+    - /opt/win-docker/win-docker-share:/shared
+    - /opt/win-docker/storage/win10:/storage
+    - /opt/win-docker/ISO/custom_win10x64.xml:/run/assets/win11x64.xml
+    - /opt/win-docker/ISO/OEM:/oem
+
+    devices:
+      - /dev/kvm
+      # Für eine IP-Nummer über DHCP in Windows. Netzwerk "vlan" muss konfiguriert sein.
+      #- /dev/vhost-net
+    #device_cgroup_rules:
+    #  - 'c *:* rwm'
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8007:8006 #noVNC
+      - 3390:3389/tcp # RDP
+      - 3390:3389/udp # RDP
+      - 5903:5902/tcp # Spice
+      - 5903:5902/udp # Spice
+      - 5901:5900 # VNC
+
+    stop_grace_period: 2m
+
+# Für eine individuelle IP-Nummer im Container. Netzwerk "vlan" muss konfiguriert sein.
+#networks:
+#  vlan:
+#    external: true
+

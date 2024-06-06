@@ -1,0 +1,19 @@
+[Unit]
+Description=Windows 11 Docker Container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Environment=PATH=/sbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+User=root
+Group=docker
+WorkingDirectory=/opt/win-docker/win11
+# Shutdown container (if running) when unit is started
+ExecStartPre=docker compose -f docker-compose-win11.yml down
+# Start container when unit is started
+ExecStart=docker compose -f docker-compose-win11.yml up
+# Stop container when unit is stopped
+ExecStop=docker compose -f docker-compose-win11.yml down
+
+[Install]
+WantedBy=default.target
