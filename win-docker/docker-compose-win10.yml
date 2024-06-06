@@ -37,12 +37,12 @@ services:
     cap_add:
       - NET_ADMIN
     ports:
-      - 8007:8006 #noVNC
-      - 3390:3389/tcp # RDP
-      - 3390:3389/udp # RDP
-      - 5903:5902/tcp # Spice
-      - 5903:5902/udp # Spice
-      - 5901:5900 # VNC
+      - 8006:8006 #noVNC
+      - 3389:3389/tcp # RDP
+      - 3389:3389/udp # RDP
+      - 5902:5902/tcp # Spice
+      - 5902:5902/udp # Spice
+      - 5900:5900 # VNC
 
     stop_grace_period: 2m
 
