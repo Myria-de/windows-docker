@@ -44,7 +44,7 @@ sudo systemctl start win11-docker.service
 Windows im Docker-Container im Browser über noVNC.
 
 # Zugriff auf den Windows-Desktop
-noVNC im Browser ist ein VNC-Viewer, der für die Installation und einfache Ansprüche ausreicht, aber keine gemeinsame Zwischenablage und keine Audio-Ausgabe bietet. Das Tool Remote-Viewer kennt diese Mängel nicht. Installieren Sie es über das Paket
+**noVNC** im Browser ist ein VNC-Viewer, der für die Installation und einfache Ansprüche ausreicht, aber keine gemeinsame Zwischenablage und keine Audio-Ausgabe bietet. Das Tool Remote-Viewer kennt diese Mängel nicht. Installieren Sie es über das Paket
 ```
 sudo apt install virt-viewer
 ```
@@ -53,7 +53,8 @@ Nach dem Start geben Sie eine Verbindungsadresse in der Form
 spice://[Host-IP/Name]:5902
 ```
 ein. Den Platzhalter ersetzen Sie durch die IP-Nummer Ihres Linux-PCs oder seinem Namen im Netzwerk. Remote-Viewer (virt-viewer) ist auch für Windows verfügbar (https://virt-manager.org/download).
-Remmina Remote-Desktop-Client ist bei Ubuntu standardmäßig installiert ist. Es fehlt aber die Spice-Unterstützung, die Sie mit
+
+**Remmina Remote-Desktop-Client** ist bei Ubuntu standardmäßig installiert ist. Es fehlt aber die Spice-Unterstützung, die Sie mit
 ```
 sudo apt install remmina-plugin-spice
 ```
@@ -66,6 +67,8 @@ In Remmina erstellen Sie über das Symbol links oben ein neues Verbindungsprofil
 [Host-IP/Name]:5902
 ```
 Ein Passwort ist nicht erforderlich. Setzen Sie auf der Registerkarte „Erweitert“ ein Häkchen vor „Audiokanal einschalten“, wenn Sie unter Windows etwas hören möchten. Danach klicken Sie auf „Speichern und verbinden“.
+![203_05_Remmina](https://github.com/user-attachments/assets/b48def57-e00d-41e4-adfd-b32d1bec5fd9)
+Remmina-Konfiguration im Verbindungsprofil.
 
 **RDP-Clients:** Eine weitere Alternative ist RDP (Remote Desktop Protocol). Die Antwortdatei aktiviert die Remotedesktopverbindung unter Windows Pro oder Enterprise, die Home-Edition bietet diese Funktion nicht. Auch RDP unterstützt eine gemeinsame Zwischenablage und die Audio-Ausgabe.
 
