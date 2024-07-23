@@ -40,6 +40,9 @@ und starten sie ihn mit
 ```
 sudo systemctl start win11-docker.service
 ```
+![203_00_Win_Browser](https://github.com/user-attachments/assets/bd26441e-aeb5-45ad-bdda-32e54ce8c412)
+Windows im Docker-Container im Browser über noVNC.
+
 # Zugriff auf den Windows-Desktop
 noVNC im Browser ist ein VNC-Viewer, der für die Installation und einfache Ansprüche ausreicht, aber keine gemeinsame Zwischenablage und keine Audio-Ausgabe bietet. Das Tool Remote-Viewer kennt diese Mängel nicht. Installieren Sie es über das Paket
 ```
