@@ -1,5 +1,5 @@
-# windows-docker
-Install Windows in a docker container
+# Windows über einen Container starten
+Install Windows in a docker or podman container
 
 A description of all options is available at https://github.com/dockur/windows.
 
@@ -10,7 +10,9 @@ Enhancements:
 - systemd service example (autostart docker container)
 - Network configuration scripts (example only)
 
-# Docker unter Linux installieren
+# Nutzung mit Docker
+
+## Docker unter Linux installieren
 ```
 sudo apt install docker-compose-v2
 ```
@@ -19,7 +21,7 @@ sudo usermod -aG docker [User]
 ```
 Den Platzhalte „[User]“ ersetzen Sie durch Ihren Benutzernamen. Melden Sie sich bei Linux ab und wieder an, damit die Änderung wirksam wird.
 
-# Windows-Installation starten
+## Windows-Installation starten
 Nach der Konfiguration von „docker-compose-win11.yml“ erstellen und starten Sie den Container mit
 ```
 docker compose -f /opt/win-docker/docker-compose-win11.yml up
@@ -43,7 +45,7 @@ sudo systemctl start win11-docker.service
 ![203_00_Win_Browser](https://github.com/user-attachments/assets/bd26441e-aeb5-45ad-bdda-32e54ce8c412)
 Windows im Docker-Container im Browser über noVNC.
 
-# Zugriff auf den Windows-Desktop
+## Zugriff auf den Windows-Desktop
 **noVNC** im Browser ist ein VNC-Viewer, der für die Installation und einfache Ansprüche ausreicht, aber keine gemeinsame Zwischenablage und keine Audio-Ausgabe bietet. Das Tool Remote-Viewer kennt diese Mängel nicht. Installieren Sie es über das Paket
 ```
 sudo apt install virt-viewer
@@ -78,7 +80,7 @@ Das Protokoll lässt sich im Verbindungsprofil von Remmina angeben. Hinter „Se
 ```
 ein. Windows-Nutzer verwenden das Tool Remotedesktopverbindung, das bei allen Windows-Editionen standardmäßig installiert ist.
 
-# Erweiterte Netzwerkkonfiguration
+## Erweiterte Netzwerkkonfiguration
 Wer mehrere Windows-Installationen gleichzeitig starten möchte, hat zwei Möglichkeiten. Tragen Sie für jedes weitere Windows in die Konfigurationsdatei für alle Angaben unter „ports:“ abweichende Werte ein, beispielsweise „8007:8006“ für noVNC. Der Webdienst ist dann über „http://localhost:8007“ erreichbar.
 
 Sie können dem System im Docker-Container auch eine IP-Nummer aus dem lokalen Netzwerk zuweisen, womit dessen Port direkt über seine IP erreichbar sind. Windows erhält dann die IP per DHCP vom Router und wird damit ebenfalls in das eigene Netzwerk eingebunden, was den Zugriff auf beliebige Netzwerkfreigaben ermöglicht.
