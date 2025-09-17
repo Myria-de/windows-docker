@@ -1,0 +1,36 @@
+services:
+  windows10:
+    privileged: true
+    image: docker.io/linuxwelt/windocker:5.0
+    container_name: windows10
+    environment:
+      LANGUAGE: "German"
+      VERSION: "10"
+      REGION: "de-DE"
+      KEYBOARD: "de-DE"
+      DISK_SIZE: "256G"
+      USERNAME: "[User]"
+      PASSWORD: "[Password]"
+      RAM_SIZE: "8G"
+      CPU_CORES: "2"
+      HOST_PORTS: "5902,5900"
+      NETWORK: "user"
+      ARGUMENTS: "-vga qxl -spice port=5902,addr=0.0.0.0,disable-ticketing -chardev spicevmc,id=vdagent,debug=0,name=vdagent,clipboard=on,mouse=off -device virtio-serial-pci -device virtserialport,chardev=vdagent,id=vdagent,name=com.redhat.spice.0 -device ich9-intel-hda -device hda-output -audio spice"
+    volumes:
+    # Eigene ISO-Datei für die Installation verwenden
+    - $HOME/win-docker/Win10_22H2_German_x64v1.iso:/boot.iso
+    - $HOME/win-docker/shared:/data
+    - $HOME/win-docker/win10:/storage
+    devices:
+      - /dev/kvm
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006 #noVNC
+      - 3389:3389/tcp # RDP
+      - 3389:3389/udp # RDP
+      - 5902:5902/tcp # Spice
+      - 5902:5902/udp # Spice
+      - 5900:5900 # VNC    
+    stop_grace_period: 2m
+
