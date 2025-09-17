@@ -12,7 +12,28 @@ Enhancements:
 
 
 # Nutzung mit Podman (rootless)
-**2Do**
+Zur Installation von Podman (rootless) in einer aktuellen Version siehe https://github.com/Myria-de/podman.
+
+Gegenüber der Nutzung von Docker (non-rootless) ergeben sich einige Nachteile. Das Windows-Netzwerk ist mit NAT konfiguriert. Ein Zugriff auf das lokale Netzwerk ist nicht möglich. Für den Datenaustausch mit dem Host können Sie aber einen gemeinsamen Ordner nutzen. Die für Docker beschriebene Netzwerkkonfiguration mit DHCP und einer eigenen IP für Windows erfordert höhere Rechte.
+
+Für die Einrichtung erstellen Sie in Ihrem Home-Verzeichnis einen Arbeitsordner:
+```
+mkdir ~/win-docker
+```
+Kopieren Sie aus "podman-compose" die Datei podman-compose-rootless-win10.yml oder podman-compose-rootless-win11.yml in diesen Ordner.
+
+Erstellen Sie den Ordner "~/win-docker/shared" für den Dateiaustausch.
+
+Öffnen Sie die YML-Datei in einem Editor und passen Sie beispielweise die Werte unter "environment" nach Wunsch an.
+
+Unter "volumes:" sind die Pfade in Ihr Homeverzeichnis konfiguriert. "$HOME/win-docker/Win10_22H2_German_x64v1.iso:/boot.iso" verweist auf die ISO-Datei für die Windows-Installation. Laden Sie die gewünschte Datei bei Microsoft herunter: https://tinyurl.com/dw11iso (Windows 11) oder https://tinyurl.com/dw10iso (Windows 10).
+
+Erstellen und starten Sie den Podman-Container im Terminal mit
+```
+cd ~/win-docker
+podman compose -f podman-compose-rootless-win10.yml up
+```
+Warten Sie, bis „Windows started succesfully“ erscheint. Im Webbrowser rufen Sie die Adresse „http://localhost:8006“ auf, die mithilfe des Tools noVNC den Windows-Bildschirm anzeigt. Nach der Installation verwenden Sie beispielsweise Remmina, wie weiter unten unter "Zugriff auf den Windows-Desktop" beschrieben. 
 
 # Nutzung mit Docker
 
