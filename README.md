@@ -26,7 +26,7 @@ Erstellen Sie den Ordner "~/win-docker/shared" für den Dateiaustausch.
 
 Öffnen Sie die YML-Datei in einem Editor und passen Sie beispielweise die Werte unter "environment" nach Wunsch an.
 
-Unter "volumes:" sind die Pfade in Ihr Homeverzeichnis konfiguriert. "$HOME/win-docker/Win10_22H2_German_x64v1.iso:/boot.iso" verweist auf die ISO-Datei für die Windows-Installation. Laden Sie die gewünschte Datei bei Microsoft herunter: https://tinyurl.com/dw11iso (Windows 11) oder https://tinyurl.com/dw10iso (Windows 10).
+Unter "volumes:" sind die Pfade in Ihr Homeverzeichnis konfiguriert. "$HOME/win-docker/Win10_22H2_German_x64v1.iso:/boot.iso" verweist auf die ISO-Datei für die Windows-Installation. Laden Sie die gewünschte Datei bei Microsoft herunter: https://tinyurl.com/dw11iso (Windows 11) oder https://tinyurl.com/dw10iso (Windows 10). Kommentieren Sie die Zeile aus, wenn Podman die ISO-Datei selbst herunterladen soll.
 
 Erstellen und starten Sie den Podman-Container im Terminal mit
 ```
