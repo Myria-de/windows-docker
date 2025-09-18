@@ -41,6 +41,7 @@ Warten Sie, bis „Windows started succesfully“ erscheint. Im Webbrowser rufen
 ```
 sudo apt install docker-compose-v2
 ```
+Die weiteren für Docker nötigen Pakete wie docker.io werden automatisch installiert.
 ```
 sudo usermod -aG docker [User]
 ```
