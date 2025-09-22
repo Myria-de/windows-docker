@@ -140,7 +140,7 @@ ip a
 ```
 herausbekommen. Das angepasste Script müssen Sie nur einmal starten, um das Docker-Netzwerk zu erzeugen. 
 
-In das Script „2_start_docker_macvlan.sh“ tragen Sie ebenfalls die Bezeichnung des Netzwerkadapters und die IP-Adressen entsprechend der vorherigen Docker-Konfiguration ein. Starten Sie das Script testweise mit
+Das Docker Netzwerk "vlan" ist standardmäßig nicht auf dem Rechner erreichbar, auf dem der Container läuft. Von anderen Rechnern im Netzwerk funktioniert der Zugriff. Um das zu ändern, verwenden Sie das Script „2_start_docker_macvlan.sh“. Hier tragen Sie ebenfalls die Bezeichnung des Netzwerkadapters und die IP-Adressen entsprechend der vorherigen Docker-Konfiguration ein. Starten Sie das Script testweise mit
 ```
 sudo sh 2_start_docker_macvlan.sh
 ```
