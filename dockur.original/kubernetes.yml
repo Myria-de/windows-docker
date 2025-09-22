@@ -1,73 +1,100 @@
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: windows-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
       storage: 64Gi
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: windows
   labels:
     name: windows
 spec:
-  terminationGracePeriodSeconds: 120 # the Kubernetes default is 30 seconds and it may be not enough
-  containers:
-    - name: windows
-      image: dockurr/windows
-      ports:
-        - containerPort: 8006
-          protocol: TCP
-        - containerPort: 3389
-          protocol: TCP
-        - containerPort: 3389
-          protocol: UDP
-      resources:
-        limits:
-          devices.kubevirt.io/kvm: 1
-      securityContext:
-        privileged: true
-      env:
-        - name: RAM_SIZE
-          value: 4G
-        - name: CPU_CORES
-          value: "2"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: windows
+  template:
+    metadata:
+      labels:
+        app: windows
+    spec:
+      containers:
+      - name: windows
+        image: dockurr/windows
+        env:
+        - name: VERSION
+          value: "11"
         - name: DISK_SIZE
           value: "64G"
-      volumeMounts:
+        ports:
+          - containerPort: 8006
+            name: http
+            protocol: TCP
+          - containerPort: 3389
+            name: rdp
+            protocol: TCP
+          - containerPort: 3389
+            name: udp
+            protocol: UDP
+          - containerPort: 5900
+            name: vnc
+            protocol: TCP
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+          privileged: true
+        volumeMounts:
         - mountPath: /storage
           name: storage
-  volumes:
-    - name: storage
-      persistentVolumeClaim:
-        claimName: windows-pvc
+        - mountPath: /dev/kvm
+          name: dev-kvm
+        - mountPath: /dev/net/tun
+          name: dev-tun
+      terminationGracePeriodSeconds: 120
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: windows-pvc
+      - hostPath:
+          path: /dev/kvm
+        name: dev-kvm
+      - hostPath:
+          path: /dev/net/tun
+          type: CharDevice
+        name: dev-tun
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: windows
 spec:
-  type: NodePort
-  selector:
-    name: windows
+  internalTrafficPolicy: Cluster
   ports:
-    - name: tcp-8006
-      protocol: TCP
+    - name: http
       port: 8006
-      targetPort: 8006
-      nodePort: 48006
-    - name: tcp-3389
       protocol: TCP
+      targetPort: 8006
+    - name: rdp
       port: 3389
+      protocol: TCP
       targetPort: 3389
-      nodePort: 43389
-    - name: udp-3389
+    - name: udp
+      port: 3389
       protocol: UDP
-      port: 3389
       targetPort: 3389
-      nodePort: 43388
+    - name: vnc
+      port: 5900
+      protocol: TCP
+      targetPort: 5900
+  selector:
+    app: windows
+  type: ClusterIP

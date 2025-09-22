@@ -1,10 +1,16 @@
+# Konfiguration mit einer loklen IP für den Container
+# und das Gastsystem.
+# Verwendenen Sie die Scripte 1_create_docker_macvlan.sh und 
+# 2_start_docker_macvlan.sh (bitte anpassen) sowie
+# den Dienst win-docker-macvlan.service, wenn Sie diese Lösung
+# dauerhaft verwenden wollen.
 services:
-  windows2:
+  windows:
     image: linuxwelt/windocker:6.0
-    container_name: windows10
+    container_name: windows11
     environment:
       LANGUAGE: "German"
-      VERSION: "10" #Pro
+      VERSION: "11" # Pro-Edition
       REGION: "de-DE"
       KEYBOARD: "de-DE"
       DISK_SIZE: "256G"
@@ -12,18 +18,25 @@ services:
       PASSWORD: "[Password]"
       RAM_SIZE: "4G"
       CPU_CORES: "2"
+      # MANUAL: "Y" # Keine automatische Installation
+      DHCP: "Y" # Windows erhält die IP per DHCP vom Router. Netzwerk "vlan" muss konfiguriert sein.
       HOST_PORTS: "5902,5900"
       ARGUMENTS: "-vga qxl -spice port=5902,addr=0.0.0.0,disable-ticketing -chardev spicevmc,id=vdagent,debug=0,name=vdagent,clipboard=on,mouse=off -device virtio-serial-pci -device virtserialport,chardev=vdagent,id=vdagent,name=com.redhat.spice.0 -device ich9-intel-hda -device hda-output -audio spice"
+    # Für eine individuelle IP-Nummer im Container. Netzwerk "vlan" muss konfiguriert sein.
+    networks:
+      vlan:
+        # Die IP-Adresse des Containers im lokalen Netzwerk
+        ipv4_address: 192.168.179.208
 
     volumes:
     # Eigene ISO-Datei für die Installation verwenden
     # Fehlt diese Zeile, wird die ISO-Datei von Microsoft heruntergeladen
     # Kopieren Sie die eigene ISO Datei nach /opt/win-docker/ISO/
-    - /opt/win-docker/ISO/Win10_22H2_German_x64v1.iso:/custom.iso
+    - /opt/win-docker/ISO/Win11_24H2_German_x64.iso:/custom.iso
     # Ordner für den Datenaustausch im Gast über Netzwerk -> host.lan
     - /opt/win-docker/win-docker-share:/shared
     # Der Speicherort der Windows-Installation
-    - /opt/win-docker/storage/win10:/storage
+    - /opt/win-docker/storage/win11:/storage
     # Script nach der Installation ausführen
     # Zur automatischen installation von virtio-win-guest-tools.exe
     # Optimiert die Leistung des Gastsystems und ermöglicht die gemeinsame Nutzung der Zwischenablage
@@ -31,7 +44,11 @@ services:
 
     devices:
       - /dev/kvm
-      - /dev/net/tun      
+      - /dev/net/tun
+      # Für eine IP-Nummer über DHCP in Windows. Netzwerk "vlan" muss konfiguriert sein.
+      - /dev/vhost-net
+    device_cgroup_rules:
+      - 'c *:* rwm'
     cap_add:
       - NET_ADMIN
     ports:
@@ -42,3 +59,8 @@ services:
       - 5902:5902/udp # Spice
       - 5900:5900 # VNC
     stop_grace_period: 2m
+# Für eine individuelle IP-Nummer im Container. Netzwerk "vlan" muss konfiguriert sein.
+networks:
+  vlan:
+    external: true
+

@@ -48,19 +48,26 @@ sudo usermod -aG docker [User]
 Den Platzhalte „[User]“ ersetzen Sie durch Ihren Benutzernamen. Melden Sie sich bei Linux ab und wieder an, damit die Änderung wirksam wird.
 
 ## Windows-Installation starten
+Verwenden Sie das Script "install.sh", um die relevanten Dateien nach "/opt/win-docker" zu kopieren. 
+
 Nach der Konfiguration von „docker-compose-win11.yml“ erstellen und starten Sie den Container mit
 ```
-docker compose -f /opt/win-docker/docker-compose-win11.yml up
+cd /opt/win-docker
+docker compose -f docker-compose-win11.yml up
 ```
 Warten Sie, bis „Windows started succesfully“ erscheint. Im Webbrowser rufen Sie die Adresse „http://localhost:8006“ auf, die mithilfe des Tools noVNC den Windows-Bildschirm anzeigt. 
 
-Wenn Sie Windows herunterfahren, wird der Docker-Container gestoppt und entfernt. Mit der Zeile
-```
-docker compose -f /opt/win-docker/docker-compose-win11.yml down
-```
-fahren Sie Windows manuell im Terminal herunter und entfernen den Container. Ersetzen Sie „down“ durch „up“, um den Container wieder zu erzeugen. Die Windows-Installation bleibt erhalten, weil Docker die bisherige virtuelle Festplatte aus dem Ordner „/opt/win-docker/storage“ einbindet. Für ein Backup der Windows-Installation(en) erstellen Sie Sicherungskopien dieses Ordners.
+Wenn Sie Windows herunterfahren, wird der Docker-Container gestoppt. Im Terminal können Sie den Container auch mit Strg-C stoppen.
 
-Die Beispieldatei „win11-docker.service“ aus dem Ordner „sytemd-service“ („windows-docker_v4.0.tar.xz“) ermöglicht den Start eines Docker-Containers über den systemd-Dienst. Passen Sie den Inhalt für die verwendete yml-Datei und einen eventuell abweichenden Installationsordnern an. Kopieren Sie die Datei als Benutzer „root“ in den Ordner „/etc/systemd/system“. Aktivieren Sie den Dienst mit
+Verwenden Sie 
+```
+docker compose -f /opt/win-docker/docker-compose-win11.yml up
+```
+erneut, um Windows zu starten.
+
+Die Windows-Installation bleibt erhalten, weil Docker die bisherige virtuelle Festplatte aus dem Ordner „/opt/win-docker/storage“ einbindet. Für ein Backup der Windows-Installation(en) erstellen Sie Sicherungskopien dieses Ordners.
+
+Die Beispieldatei „win11-docker.service“ aus dem Ordner „systemd-service“ermöglicht den Start eines Docker-Containers über den systemd-Dienst. Passen Sie den Inhalt für die verwendete yml-Datei und einen eventuell abweichenden Installationsordnern an. Kopieren Sie die Datei als Benutzer „root“ in den Ordner „/etc/systemd/system“. Aktivieren Sie den Dienst mit
 ```
 sudo systemctl enable win11-docker.service
 ```
@@ -70,6 +77,14 @@ sudo systemctl start win11-docker.service
 ```
 ![203_00_Win_Browser](https://github.com/user-attachments/assets/bd26441e-aeb5-45ad-bdda-32e54ce8c412)
 Windows im Docker-Container im Browser über noVNC.
+
+**Hiweise:** Das System und die Programme im Docker-Container laufen unter dem Benutzerkonto "root". Alle Dateien, die unter "/opt/win-docker" neu erstellt oder verändert werden, gehören ebenfalls dem Benutzer "root". Wenn Sie Schreibzugriff auf einen der Ordner benötigen, verwenden Sie "sudo" im Terminal. Oder Sie ändern die Rechte mit
+```
+sudo chown -R root:docker /opt/win-docker
+sudo find /opt/win-docker -type d -exec chmod 775 {} +
+sudo find /opt/win-docker -type f -exec chmod 664 {} +
+```
+Als Mitglied der Gruppe "docker" erhalten Sie Schreibzugriff. Die Rechte ändern sich jedoch wieder, etwa wenn Sie unter Windows Dateien im Ordner für den Datenaustausch erstellen ("Netzwerk -> host.lan").
 
 ## Zugriff auf den Windows-Desktop
 **noVNC** im Browser ist ein VNC-Viewer, der für die Installation und einfache Ansprüche ausreicht, aber keine gemeinsame Zwischenablage und keine Audio-Ausgabe bietet. Das Tool Remote-Viewer kennt diese Mängel nicht. Installieren Sie es über das Paket
@@ -115,7 +130,6 @@ Wie sich das konfigurieren lässt, zeigen zwei Beispielscripte aus dem Ordner �
 ```
 --ip-range=192.168.179.208/28
 ```
-
 Bei der Berechnung der IPs hilft ein Online-Rechner wie https://www.ipaddressguide.com/cidr. Verwenden Sie einen IP-Bereich, den der Router nicht über DHCP vergibt. Eine Fritzbox beispielsweise verwendet standardmäßig nur Adressen bis 192.168.178.200. Die Zeile
 ```
 --aux-address 'host=192.168.179.223'
@@ -125,12 +139,14 @@ legt eine Hilfsadresse an, die für die Verbindung vom Host-Netzwerk zum Docker-
 ip a
 ```
 herausbekommen. Das angepasste Script müssen Sie nur einmal starten, um das Docker-Netzwerk zu erzeugen. 
+
 In das Script „2_start_docker_macvlan.sh“ tragen Sie ebenfalls die Bezeichnung des Netzwerkadapters und die IP-Adressen entsprechend der vorherigen Docker-Konfiguration ein. Starten Sie das Script testweise mit
 ```
 sudo sh 2_start_docker_macvlan.sh
 ```
-Damit der Docker-Container die neue Konfiguration verwendet, entfernen Sie in der yml-Datei die Kommentarzeichen („#“) vor den Zeilen für die Netzwerkkonfiguration. Hinter „ipv4_address:“ tragen Sie die erste IP aus dem festgelegten Bereich ein, in unserem Beispiel „192.168.179.208“. In weiteren Windows-Container erhöhen Sie den Wert jeweils um „1“. Starten Sie danach den Container neu.
+Die Beispieldate "docker-compose-win11-vlan.yml" zeigt die Konfiguration des Container. Hinter „ipv4_address:“ tragen Sie die erste IP aus dem festgelegten Bereich ein, in unserem Beispiel „192.168.179.208“. In weiteren Windows-Container erhöhen Sie den Wert jeweils um „1“. Starten Sie danach den Container neu.
 
 Durch die neue Konfiguration berücksichtigt Docker die Zuweisungen unter „ports:“ nicht mehr. NoVNC ist im Browser über http://192.168.179.208:8006 erreichbar, der Spice-Server entsprechend über spice://192.168.179.208:5902. Für RDP gilt die IP-Nummer, die Windows per DHCP vom Router erhalten hat.
 
 Für den automatischen Start des Scripts verwenden Sie die Datei „win-docker-macvlan.service“ aus dem Ordner „systemd-service“. Aktivieren und starten Sie den Dienst wie oben für „win11-docker.service“ beschrieben.
+

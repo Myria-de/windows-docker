@@ -35,7 +35,7 @@ boot() {
         grep -Fq "BOOTMGR is missing" "$QEMU_PTY" && fail="y"
       fi
       if [ -z "$fail" ]; then
-        info "Windows started succesfully, visit http://localhost:8006/ to view the screen..."
+        info "Windows started successfully, visit http://127.0.0.1:8006/ to view the screen..."
         return 0
       fi
     fi
@@ -216,7 +216,7 @@ _graceful_shutdown() {
 
 SERIAL="pty"
 MONITOR="telnet:localhost:$QEMU_PORT,server,nowait,nodelay"
-MONITOR="$MONITOR -daemonize -D $QEMU_LOG -pidfile $QEMU_PID"
+MONITOR+=" -daemonize -D $QEMU_LOG -pidfile $QEMU_PID"
 
 _trap _graceful_shutdown SIGTERM SIGHUP SIGINT SIGABRT SIGQUIT
 
