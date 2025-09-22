@@ -87,6 +87,7 @@ sudo find /opt/win-docker -type f -exec chmod 664 {} +
 ```
 > Als Mitglied der Gruppe "docker" erhalten Sie Schreibzugriff. Die Rechte ändern sich jedoch wieder, etwa wenn Sie unter Windows Dateien im Ordner für den Datenaustausch erstellen ("Netzwerk -> host.lan").
 
+> [!NOTE]
 > Die Beispiel-Compose-Dateien sind für die automatische Windows-Installation ohne Benutzereingaben konfiguriert. Bei der Installation von Windows 11 werden damit auch die Hardwareanforderungen nicht geprüft. Wenn Sie eine manuelle Installation wünschen, verwenden Sie 
 ```
 MANUAL: "Y"
