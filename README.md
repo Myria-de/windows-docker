@@ -78,13 +78,19 @@ sudo systemctl start win11-docker.service
 ![203_00_Win_Browser](https://github.com/user-attachments/assets/bd26441e-aeb5-45ad-bdda-32e54ce8c412)
 Windows im Docker-Container im Browser über noVNC.
 
-**Hiweise:** Das System und die Programme im Docker-Container laufen unter dem Benutzerkonto "root". Alle Dateien, die unter "/opt/win-docker" neu erstellt oder verändert werden, gehören ebenfalls dem Benutzer "root". Wenn Sie Schreibzugriff auf einen der Ordner benötigen, verwenden Sie "sudo" im Terminal. Oder Sie ändern die Rechte mit
+**Hinweise:** Das System und die Programme im Docker-Container laufen unter dem Benutzerkonto "root". Alle Dateien, die unter "/opt/win-docker" neu erstellt oder verändert werden, gehören ebenfalls dem Benutzer "root". Wenn Sie Schreibzugriff auf einen der Ordner benötigen, verwenden Sie "sudo" im Terminal. Oder Sie ändern die Rechte mit
 ```
 sudo chown -R root:docker /opt/win-docker
 sudo find /opt/win-docker -type d -exec chmod 775 {} +
 sudo find /opt/win-docker -type f -exec chmod 664 {} +
 ```
 Als Mitglied der Gruppe "docker" erhalten Sie Schreibzugriff. Die Rechte ändern sich jedoch wieder, etwa wenn Sie unter Windows Dateien im Ordner für den Datenaustausch erstellen ("Netzwerk -> host.lan").
+
+Die Beispiel-Compose-Dateien sind für die automatische Windows-Installation ohne Benutzereingaben konfiguriert. Bei der Installation von Windows 11 werden damit auch die Hardwareanforderungen nicht geprüft. Wenn Sie eine manuelle Installation wünschen, verwenden Sie 
+```
+MANUAL: "Y"
+```
+im Abschnitt "environment:" der YML-Datei.
 
 ## Zugriff auf den Windows-Desktop
 **noVNC** im Browser ist ein VNC-Viewer, der für die Installation und einfache Ansprüche ausreicht, aber keine gemeinsame Zwischenablage und keine Audio-Ausgabe bietet. Das Tool Remote-Viewer kennt diese Mängel nicht. Installieren Sie es über das Paket
